@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, View, FlatList, StyleSheet } from 'react-native';
 
-import { Search } from '../../components';
+import { LoadingCard, Search } from '../../components';
 
 export const Home = () => {
   const handleSearch = useCallback((value: string) => console.log(value), []);
@@ -10,6 +10,15 @@ export const Home = () => {
     <SafeAreaView style={styles.container}>
       <View style={[styles.container, styles.subContainer]}>
         <Search onChange={handleSearch} />
+
+        <FlatList
+          keyExtractor={(item) => item}
+          contentContainerStyle={styles.list}
+          renderItem={() => <LoadingCard />}
+          showsVerticalScrollIndicator={false}
+          data={[...Array(10).keys()].map((i: number) => String(i))}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+        />
       </View>
     </SafeAreaView>
   );
@@ -21,6 +30,13 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
   },
   subContainer: {
-    padding: 20,
+    paddingTop: 20,
+  },
+  separator: {
+    height: 20,
+  },
+  list: {
+    paddingBottom: 40,
+    paddingHorizontal: 20,
   },
 });
