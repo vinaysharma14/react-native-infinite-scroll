@@ -1,10 +1,17 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import { SafeAreaView, View, FlatList, StyleSheet } from 'react-native';
 
 import { LoadingCard, Search } from '../../components';
+import { fetchConnectionsReqAction } from '../../store/actions/connections';
 
 export const Home = () => {
+  const dispatch = useDispatch();
   const handleSearch = useCallback((value: string) => console.log(value), []);
+
+  useEffect(() => {
+    dispatch(fetchConnectionsReqAction(50));
+  }, [dispatch]);
 
   return (
     <SafeAreaView style={styles.container}>
