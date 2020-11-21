@@ -13,12 +13,12 @@ interface Props {
 export const Search: FC<Props> = ({ onChange }) => (
   <View style={styles.container}>
     <TextInput
-      placeholder="Search"
       style={styles.input}
       autoCapitalize="words"
       selectionColor={'#333'}
       onChangeText={onChange}
       placeholderTextColor="#555"
+      placeholder="Search your connections"
     />
 
     <MaterialCommunityIcon size={20} name="magnify" color="#555" />
