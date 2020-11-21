@@ -22,6 +22,7 @@ export const connectionsReducer = (
     case ACTION_TYPES.fetchConnectionsReq: {
       return {
         ...state,
+        fetchErrMsg: undefined,
         fetchingConnections: true,
       };
     }
@@ -43,6 +44,7 @@ export const connectionsReducer = (
 
       return {
         ...state,
+        fetchErrMsg: undefined,
         connections: state.connections?.length
           ? state.connections.concat(connections)
           : connections,
