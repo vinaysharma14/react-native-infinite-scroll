@@ -40,7 +40,7 @@ export interface FetchConnectionsSuccessAction {
 // actions defined with type and payload for searching
 export interface SearchConnectionsReqAction {
   type: typeof ACTION_TYPES.searchConnectionsReq;
-  payload: { query: string; mockData: Connection[] };
+  payload: { query: string; mockData: ConnectionsState['connections'] };
 }
 export interface SearchConnectionsErrAction {
   type: typeof ACTION_TYPES.searchConnectionsErr;

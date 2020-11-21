@@ -1,5 +1,3 @@
-import { Connection } from '../../types';
-
 import {
   ConnectionsState,
   FetchConnectionsReqAction,
@@ -20,7 +18,7 @@ const fetchConnectionsReqAction = (
 
 // fetch error
 const fetchConnectionsErrAction = (
-  fetchErrMsg: String,
+  fetchErrMsg: string,
 ): FetchConnectionsErrAction => ({
   type: 'connections/fetchErr',
   payload: { fetchErrMsg },
@@ -37,7 +35,7 @@ const fetchConnectionsSuccessAction = (
 // search request
 const searchConnectionsReqAction = (
   query: string,
-  mockData: Connection[],
+  mockData: ConnectionsState['connections'],
 ): SearchConnectionsReqAction => ({
   type: 'connections/searchReq',
   payload: { query, mockData },
