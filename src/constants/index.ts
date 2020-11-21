@@ -2,6 +2,7 @@
 export const SCREENS = {
   home: 'home',
   splash: 'splash',
+  connectionDetails: 'connectionDetails',
 } as const;
 
 // duration for which splash screen stays

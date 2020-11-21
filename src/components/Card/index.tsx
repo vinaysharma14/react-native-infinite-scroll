@@ -1,25 +1,43 @@
-import React, { FC } from 'react';
-import { Dimensions, Image, StyleSheet, Text, View } from 'react-native';
-import { FONT_FAMILY } from '../../assets';
+import React, { FC, useCallback } from 'react';
+import { useNavigation } from '@react-navigation/native';
+
+import {
+  View,
+  Text,
+  Image,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 
 import { Connection } from '../../types';
+import { FONT_FAMILY } from '../../assets';
+import { SCREENS } from '../../constants';
 
 export const Card: FC<
   Pick<Connection, 'name' | 'cell' | 'email' | 'location' | 'thumbnail'>
-> = ({ name, cell, email, location, thumbnail }) => (
-  <View style={styles.container}>
-    <Image source={{ uri: thumbnail }} style={styles.image} />
+> = ({ name, cell, email, location, thumbnail }) => {
+  const { navigate } = useNavigation();
 
-    <View style={styles.flex1}>
+  const handlePress = useCallback(() => {
+    navigate(SCREENS.connectionDetails, { email });
+  }, [navigate, email]);
+
+  return (
+    <TouchableOpacity onPress={handlePress} style={styles.container}>
+      <Image source={{ uri: thumbnail }} style={styles.image} />
+
       <View style={styles.flex1}>
-        <Text style={[styles.flex1, styles.mb5, styles.font]}>{name}</Text>
-        <Text style={[styles.flex1, styles.mb5, styles.font]}>{cell}</Text>
-        <Text style={[styles.flex1, styles.mb5, styles.font]}>{email}</Text>
-        <Text style={[styles.flex1, styles.font]}>{location.country}</Text>
+        <View style={styles.flex1}>
+          <Text style={[styles.flex1, styles.mb5, styles.font]}>{name}</Text>
+          <Text style={[styles.flex1, styles.mb5, styles.font]}>{cell}</Text>
+          <Text style={[styles.flex1, styles.mb5, styles.font]}>{email}</Text>
+          <Text style={[styles.flex1, styles.font]}>{location.country}</Text>
+        </View>
       </View>
-    </View>
-  </View>
-);
+    </TouchableOpacity>
+  );
+};
 
 const { height } = Dimensions.get('window');
 
