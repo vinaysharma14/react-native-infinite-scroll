@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -8,8 +8,6 @@ import {
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
-  NativeSyntheticEvent,
-  TextInputSubmitEditingEventData,
 } from 'react-native';
 
 import { State } from '../../store';
@@ -23,9 +21,12 @@ import {
 } from '../../store/actions/connections';
 
 export const Home = () => {
+  const [showSearchResults, setShowSearchResults] = useState(false);
+
   const {
     connections,
     fetchErrMsg,
+    searchResults,
     fetchingConnections,
     searchingConnections,
   } = useSelector(({ connectionsReducer }: State) => connectionsReducer);
@@ -33,8 +34,10 @@ export const Home = () => {
   const dispatch = useDispatch();
 
   const handleSearch = useCallback(
-    ({ nativeEvent }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) =>
-      dispatch(searchConnectionsReqAction(nativeEvent.text, connections)),
+    (value: string) => {
+      setShowSearchResults(true);
+      dispatch(searchConnectionsReqAction(value, connections));
+    },
     [dispatch, connections],
   );
 
@@ -42,6 +45,10 @@ export const Home = () => {
     () => dispatch(fetchConnectionsReqAction(50)),
     [dispatch],
   );
+
+  const handleClear = useCallback(() => {
+    setShowSearchResults(false);
+  }, []);
 
   useEffect(() => {
     handleConnectionsFetch();
@@ -51,10 +58,18 @@ export const Home = () => {
     return searchingConnections || (fetchingConnections && !connections);
   }, [searchingConnections, fetchingConnections, connections]);
 
+  const listData = useMemo(() => {
+    if (showSearchResults) {
+      return searchResults;
+    }
+
+    return connections;
+  }, [searchResults, showSearchResults, connections]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={[styles.container, styles.subContainer]}>
-        <Search onSubmit={handleSearch} />
+        <Search onClear={handleClear} onSubmit={handleSearch} />
 
         {/* error message if API fails with a prompt to try again*/}
         {fetchErrMsg && !showListSkeleton && (
@@ -74,12 +89,13 @@ export const Home = () => {
         )}
 
         {/* connection cards list */}
-        {connections?.length && !showListSkeleton && (
+        {listData?.length && !showListSkeleton && (
           <FlatList
-            data={connections}
+            data={listData}
             renderItem={({ item, index }) =>
-              index >= connections.length - LAZY_LOAD_PLACEHOLDER_COUNT &&
-              index <= connections.length - 1 ? (
+              index >= listData.length - LAZY_LOAD_PLACEHOLDER_COUNT &&
+              index <= listData.length - 1 &&
+              !showSearchResults ? (
                 // placeholder cards for loading more cards
                 // when user reaches end of the list
                 <LoadingCard />

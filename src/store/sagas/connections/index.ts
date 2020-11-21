@@ -57,7 +57,7 @@ function* searchConnectionsGenerator(
   try {
     // TODO: search algorithm with the query
     yield delay(2000);
-    yield put(searchConnectionsSuccessAction(mockData));
+    yield put(searchConnectionsSuccessAction(mockData?.slice(0, 5)));
   } catch ({ message }) {
     yield put(searchConnectionsErrAction(message));
   }
