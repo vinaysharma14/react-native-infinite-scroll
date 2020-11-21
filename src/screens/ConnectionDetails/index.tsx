@@ -81,41 +81,41 @@ export const ConnectionDetails = () => {
 
   return (
     <SafeAreaView style={[styles.bgWhite, styles.flex1]}>
-      <View style={styles.container}>
+      <View style={[styles.pt20, styles.alignCenter]}>
         <TouchableOpacity style={styles.back} onPress={handleBackNav}>
           <EvilIcon size={40} name="chevron-left" color="#555" />
         </TouchableOpacity>
 
-        <ScrollView
-          contentContainerStyle={styles.scroll}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.shadow}>
-            <Image source={{ uri: connection?.image }} style={styles.image} />
-          </View>
+        <View style={styles.shadow}>
+          <Image source={{ uri: connection?.image }} style={styles.image} />
+        </View>
 
-          <Text style={styles.name}>
-            {connection?.name}, {connection?.age}
-          </Text>
-
-          {connection.details?.map((values) => (
-            <View style={[styles.detailsContainer, styles.shadow]}>
-              <View>
-                {values.map(({ label, value }, index) => (
-                  <Text
-                    style={[
-                      styles.detail,
-                      index === values.length - 1 && styles.mb0,
-                    ]}
-                  >
-                    {label}: {value}
-                  </Text>
-                ))}
-              </View>
-            </View>
-          ))}
-        </ScrollView>
+        <Text style={styles.name}>
+          {connection?.name}, {connection?.age}
+        </Text>
       </View>
+
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.alignCenter}
+      >
+        {connection.details?.map((values) => (
+          <View style={[styles.detailsContainer, styles.shadow]}>
+            <View>
+              {values.map(({ label, value }, index) => (
+                <Text
+                  style={[
+                    styles.detail,
+                    index === values.length - 1 && styles.mb0,
+                  ]}
+                >
+                  {label}: {value}
+                </Text>
+              ))}
+            </View>
+          </View>
+        ))}
+      </ScrollView>
     </SafeAreaView>
   );
 };
@@ -130,12 +130,10 @@ const styles = StyleSheet.create({
   flex1: {
     flex: 1,
   },
-  container: {
+  pt20: {
     paddingTop: 20,
-    paddingHorizontal: 20,
-    backgroundColor: 'white',
   },
-  scroll: {
+  alignCenter: {
     alignItems: 'center',
   },
   back: {
@@ -165,14 +163,13 @@ const styles = StyleSheet.create({
     fontFamily: FONT_FAMILY.MontserratRegular,
   },
   detail: {
-    marginBottom: 15,
+    marginBottom: 10,
     fontSize: height * 0.017,
     fontFamily: FONT_FAMILY.MontserratRegular,
   },
   detailsContainer: {
     padding: 20,
     borderRadius: 5,
-    alignItems: 'center',
     width: width * 0.8,
   },
 });
