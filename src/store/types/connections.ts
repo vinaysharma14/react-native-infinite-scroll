@@ -10,7 +10,7 @@ export const ACTION_TYPES = {
   // searching connections
   searchConnectionsReq: 'connections/searchReq',
   searchConnectionsErr: 'connections/searchErr',
-  searchConnectionsSuccess: 'connections/fetchSuccess',
+  searchConnectionsSuccess: 'connections/searchSuccess',
 } as const;
 
 // reducer state type

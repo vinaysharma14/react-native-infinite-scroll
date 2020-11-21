@@ -67,7 +67,7 @@ export const connectionsReducer = (
       return {
         ...state,
         searchErrMsg,
-        fetchingConnections: false,
+        searchingConnections: false,
       };
     }
 
@@ -78,7 +78,7 @@ export const connectionsReducer = (
       return {
         ...state,
         searchResults,
-        fetchingConnections: false,
+        searchingConnections: false,
       };
     }
 

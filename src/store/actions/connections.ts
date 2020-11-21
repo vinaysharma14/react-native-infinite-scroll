@@ -53,7 +53,7 @@ const searchConnectionsErrAction = (
 const searchConnectionsSuccessAction = (
   searchResults: ConnectionsState['searchResults'],
 ): SearchConnectionsSuccessAction => ({
-  type: 'connections/fetchSuccess',
+  type: 'connections/searchSuccess',
   payload: { searchResults },
 });
 

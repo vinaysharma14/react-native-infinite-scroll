@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import {
@@ -8,21 +8,35 @@ import {
   StyleSheet,
   SafeAreaView,
   TouchableOpacity,
+  NativeSyntheticEvent,
+  TextInputSubmitEditingEventData,
 } from 'react-native';
 
 import { State } from '../../store';
 import { FONT_FAMILY } from '../../assets';
 import { Card, LoadingCard, Search } from '../../components';
 import { LAZY_LOAD_PLACEHOLDER_COUNT } from '../../constants';
-import { fetchConnectionsReqAction } from '../../store/actions/connections';
+
+import {
+  fetchConnectionsReqAction,
+  searchConnectionsReqAction,
+} from '../../store/actions/connections';
 
 export const Home = () => {
-  const { connections, fetchingConnections, fetchErrMsg } = useSelector(
-    ({ connectionsReducer }: State) => connectionsReducer,
-  );
+  const {
+    connections,
+    fetchErrMsg,
+    fetchingConnections,
+    searchingConnections,
+  } = useSelector(({ connectionsReducer }: State) => connectionsReducer);
 
   const dispatch = useDispatch();
-  const handleSearch = useCallback((value: string) => console.log(value), []);
+
+  const handleSearch = useCallback(
+    ({ nativeEvent }: NativeSyntheticEvent<TextInputSubmitEditingEventData>) =>
+      dispatch(searchConnectionsReqAction(nativeEvent.text, connections)),
+    [dispatch, connections],
+  );
 
   const handleConnectionsFetch = useCallback(
     () => dispatch(fetchConnectionsReqAction(50)),
@@ -33,12 +47,17 @@ export const Home = () => {
     handleConnectionsFetch();
   }, [handleConnectionsFetch]);
 
+  const showListSkeleton = useMemo(() => {
+    return searchingConnections || (fetchingConnections && !connections);
+  }, [searchingConnections, fetchingConnections, connections]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={[styles.container, styles.subContainer]}>
-        <Search onChange={handleSearch} />
+        <Search onSubmit={handleSearch} />
+
         {/* error message if API fails with a prompt to try again*/}
-        {fetchErrMsg && (
+        {fetchErrMsg && !showListSkeleton && (
           <View style={styles.errorContainer}>
             <Text style={styles.regularFont}>
               We are unable to fetch results for you, please check your network
@@ -55,7 +74,7 @@ export const Home = () => {
         )}
 
         {/* connection cards list */}
-        {connections?.length && (
+        {connections?.length && !showListSkeleton && (
           <FlatList
             data={connections}
             renderItem={({ item, index }) =>
@@ -84,7 +103,7 @@ export const Home = () => {
         )}
 
         {/* initial loading skeleton */}
-        {fetchingConnections && !connections && (
+        {showListSkeleton && (
           <FlatList
             keyExtractor={(item) => item}
             contentContainerStyle={styles.list}

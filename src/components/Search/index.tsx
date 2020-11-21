@@ -1,5 +1,11 @@
 import React, { FC } from 'react';
-import { StyleSheet, View } from 'react-native';
+
+import {
+  View,
+  StyleSheet,
+  NativeSyntheticEvent,
+  TextInputSubmitEditingEventData,
+} from 'react-native';
 
 import { TextInput } from 'react-native-gesture-handler';
 import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -7,16 +13,18 @@ import MaterialCommunityIcon from 'react-native-vector-icons/MaterialCommunityIc
 import { FONT_FAMILY } from '../../assets';
 
 interface Props {
-  onChange: (value: string) => void;
+  onSubmit: (
+    value: NativeSyntheticEvent<TextInputSubmitEditingEventData>,
+  ) => void;
 }
 
-export const Search: FC<Props> = ({ onChange }) => (
+export const Search: FC<Props> = ({ onSubmit }) => (
   <View style={styles.container}>
     <TextInput
       style={styles.input}
       autoCapitalize="words"
       selectionColor={'#333'}
-      onChangeText={onChange}
+      onSubmitEditing={onSubmit}
       placeholderTextColor="#555"
       placeholder="Search your connections"
     />

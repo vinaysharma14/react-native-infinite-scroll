@@ -1,4 +1,4 @@
-import { takeLatest, put, all } from 'redux-saga/effects';
+import { takeLatest, put, all, delay } from 'redux-saga/effects';
 
 import { fetchConnections } from '../../../services';
 
@@ -11,6 +11,8 @@ import {
 import {
   fetchConnectionsSuccessAction,
   fetchConnectionsErrAction,
+  searchConnectionsErrAction,
+  searchConnectionsSuccessAction,
 } from '../../actions/connections';
 
 import { Connection, ConnectionResponse } from '../../../types';
@@ -54,9 +56,10 @@ function* searchConnectionsGenerator(
 
   try {
     // TODO: search algorithm with the query
-    yield put(fetchConnectionsSuccessAction(mockData));
+    yield delay(2000);
+    yield put(searchConnectionsSuccessAction(mockData));
   } catch ({ message }) {
-    yield put(fetchConnectionsErrAction(message));
+    yield put(searchConnectionsErrAction(message));
   }
 }
 
