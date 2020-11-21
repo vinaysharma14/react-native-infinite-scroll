@@ -33,7 +33,7 @@ function* fetchConnectionsGenerator(
         age: dob.age,
         dob: dob.date,
         image: picture.large,
-        thumbnail: picture.thumbnail,
+        thumbnail: picture.medium,
         name: `${name.first} ${name.last}`,
       }),
     );

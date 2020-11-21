@@ -1,78 +1,78 @@
 interface Location {
   street: {
-    number: Number;
-    name: String;
+    number: number;
+    name: string;
   };
-  city: String;
-  state: String;
-  country: String;
-  postcode: Number;
+  city: string;
+  state: string;
+  country: string;
+  postcode: number;
   coordinates: {
-    latitude: String;
-    longitude: String;
+    latitude: string;
+    longitude: string;
   };
   timezone: {
-    offset: String;
-    description: String;
+    offset: string;
+    description: string;
   };
 }
 
 interface Response {
-  gender: String;
+  gender: string;
   name: {
-    title: String;
-    first: String;
-    last: String;
+    title: string;
+    first: string;
+    last: string;
   };
   location: Location;
-  email: String;
+  email: string;
   login: {
-    uuid: String;
-    username: String;
-    password: String;
-    salt: String;
-    md5: String;
-    sha1: String;
-    sha256: String;
+    uuid: string;
+    username: string;
+    password: string;
+    salt: string;
+    md5: string;
+    sha1: string;
+    sha256: string;
   };
   dob: {
-    date: String;
-    age: Number;
+    date: string;
+    age: number;
   };
   registered: {
-    date: String;
-    age: Number;
+    date: string;
+    age: number;
   };
-  phone: String;
-  cell: String;
+  phone: string;
+  cell: string;
   id: {
-    name: String;
-    value: String;
+    name: string;
+    value: string;
   };
   picture: {
-    large: String;
-    medium: String;
-    thumbnail: String;
+    large: string;
+    medium: string;
+    thumbnail: string;
   };
-  nat: String;
+  nat: string;
 }
 
 export interface ConnectionResponse {
   results: Response[];
   info: {
-    seed: String;
-    results: Number;
-    page: Number;
-    version: String;
+    page: number;
+    seed: string;
+    results: number;
+    version: string;
   };
 }
 
 export interface Connection {
-  name: String;
-  cell: String;
-  email: String;
-  phone: String;
-  gender: String;
+  name: string;
+  cell: string;
+  email: string;
+  phone: string;
+  gender: string;
   age: Response['dob']['age'];
   dob: Response['dob']['date'];
   image: Response['picture']['large'];

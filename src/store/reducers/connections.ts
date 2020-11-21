@@ -40,7 +40,9 @@ export const connectionsReducer = (
 
       return {
         ...state,
-        connections,
+        connections: state.connections?.length
+          ? state.connections.concat(connections)
+          : connections,
         fetchingConnections: false,
       };
     }
