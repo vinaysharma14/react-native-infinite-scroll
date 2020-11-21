@@ -1,3 +1,5 @@
+import { Connection } from '../../types';
+
 // types actions
 export const ACTION_TYPES = {
   fetchConnectionsReq: 'connections/fetchReq',
@@ -7,7 +9,7 @@ export const ACTION_TYPES = {
 
 // reducer state type
 export interface ConnectionsState {
-  connections?: [];
+  connections?: Connection[];
   fetchErrMsg?: String;
   fetchingConnections: Boolean;
 }
