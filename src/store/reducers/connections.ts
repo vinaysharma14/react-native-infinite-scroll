@@ -8,6 +8,9 @@ const initialState: ConnectionsState = {
   fetchErrMsg: undefined,
   connections: undefined,
   fetchingConnections: false,
+  searchResults: undefined,
+  searchingConnections: false,
+  searchErrMsg: undefined,
 };
 
 export const connectionsReducer = (
@@ -15,7 +18,7 @@ export const connectionsReducer = (
   action: ConnectionActions,
 ): ConnectionsState => {
   switch (action.type) {
-    // connections API requested
+    // fetch connections API requested
     case ACTION_TYPES.fetchConnectionsReq: {
       return {
         ...state,
@@ -23,7 +26,7 @@ export const connectionsReducer = (
       };
     }
 
-    // connections API request failed
+    // fetch connections API request failed
     case ACTION_TYPES.fetchConnectionsErr: {
       const { fetchErrMsg } = action.payload;
 
@@ -34,7 +37,7 @@ export const connectionsReducer = (
       };
     }
 
-    // connections API request succeeded
+    // fetch connections API request succeeded
     case ACTION_TYPES.fetchConnectionsSuccess: {
       const { connections } = action.payload;
 
@@ -43,6 +46,36 @@ export const connectionsReducer = (
         connections: state.connections?.length
           ? state.connections.concat(connections)
           : connections,
+        fetchingConnections: false,
+      };
+    }
+
+    // search connections API requested
+    case ACTION_TYPES.searchConnectionsReq: {
+      return {
+        ...state,
+        searchingConnections: true,
+      };
+    }
+
+    // search connections API request failed
+    case ACTION_TYPES.searchConnectionsErr: {
+      const { searchErrMsg } = action.payload;
+
+      return {
+        ...state,
+        searchErrMsg,
+        fetchingConnections: false,
+      };
+    }
+
+    // search connections API request succeeded
+    case ACTION_TYPES.searchConnectionsSuccess: {
+      const { searchResults } = action.payload;
+
+      return {
+        ...state,
+        searchResults,
         fetchingConnections: false,
       };
     }

@@ -1,11 +1,16 @@
+import { Connection } from '../../types';
+
 import {
   ConnectionsState,
   FetchConnectionsReqAction,
   FetchConnectionsErrAction,
   FetchConnectionsSuccessAction,
+  SearchConnectionsReqAction,
+  SearchConnectionsErrAction,
+  SearchConnectionsSuccessAction,
 } from '../types/connections';
 
-// request
+// fetch request
 const fetchConnectionsReqAction = (
   limit: FetchConnectionsReqAction['payload']['limit'],
 ): FetchConnectionsReqAction => ({
@@ -13,7 +18,7 @@ const fetchConnectionsReqAction = (
   payload: { limit },
 });
 
-// error
+// fetch error
 const fetchConnectionsErrAction = (
   fetchErrMsg: String,
 ): FetchConnectionsErrAction => ({
@@ -21,7 +26,7 @@ const fetchConnectionsErrAction = (
   payload: { fetchErrMsg },
 });
 
-// success
+// fetch success
 const fetchConnectionsSuccessAction = (
   connections: ConnectionsState['connections'],
 ): FetchConnectionsSuccessAction => ({
@@ -29,8 +34,36 @@ const fetchConnectionsSuccessAction = (
   payload: { connections },
 });
 
+// search request
+const searchConnectionsReqAction = (
+  query: string,
+  mockData: Connection[],
+): SearchConnectionsReqAction => ({
+  type: 'connections/searchReq',
+  payload: { query, mockData },
+});
+
+// search error
+const searchConnectionsErrAction = (
+  searchErrMsg: string,
+): SearchConnectionsErrAction => ({
+  type: 'connections/searchErr',
+  payload: { searchErrMsg },
+});
+
+// search success
+const searchConnectionsSuccessAction = (
+  searchResults: ConnectionsState['searchResults'],
+): SearchConnectionsSuccessAction => ({
+  type: 'connections/fetchSuccess',
+  payload: { searchResults },
+});
+
 export {
   fetchConnectionsReqAction,
   fetchConnectionsErrAction,
   fetchConnectionsSuccessAction,
+  searchConnectionsReqAction,
+  searchConnectionsErrAction,
+  searchConnectionsSuccessAction,
 };

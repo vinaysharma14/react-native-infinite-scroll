@@ -1,10 +1,11 @@
-import { takeLatest, put } from 'redux-saga/effects';
+import { takeLatest, put, all } from 'redux-saga/effects';
 
 import { fetchConnections } from '../../../services';
 
 import {
   ACTION_TYPES,
   FetchConnectionsReqAction,
+  SearchConnectionsReqAction,
 } from '../../types/connections';
 
 import {
@@ -14,6 +15,7 @@ import {
 
 import { Connection, ConnectionResponse } from '../../../types';
 
+// fetching connections
 function* fetchConnectionsGenerator(
   action: FetchConnectionsReqAction,
 ): Generator {
@@ -44,6 +46,29 @@ function* fetchConnectionsGenerator(
   }
 }
 
+// searching connections
+function* searchConnectionsGenerator(
+  action: SearchConnectionsReqAction,
+): Generator {
+  const { query, mockData } = action.payload;
+
+  try {
+    // TODO: search algorithm with the query
+    yield put(fetchConnectionsSuccessAction(mockData));
+  } catch ({ message }) {
+    yield put(fetchConnectionsErrAction(message));
+  }
+}
+
 export function* fetchConnectionsSaga(): Generator {
-  yield takeLatest(ACTION_TYPES.fetchConnectionsReq, fetchConnectionsGenerator);
+  yield all([
+    yield takeLatest(
+      ACTION_TYPES.fetchConnectionsReq,
+      fetchConnectionsGenerator,
+    ),
+    yield takeLatest(
+      ACTION_TYPES.searchConnectionsReq,
+      searchConnectionsGenerator,
+    ),
+  ]);
 }
