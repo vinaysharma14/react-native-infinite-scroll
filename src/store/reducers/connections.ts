@@ -56,6 +56,7 @@ export const connectionsReducer = (
     case ACTION_TYPES.searchConnectionsReq: {
       return {
         ...state,
+        searchErrMsg: undefined,
         searchingConnections: true,
       };
     }
@@ -78,6 +79,7 @@ export const connectionsReducer = (
       return {
         ...state,
         searchResults,
+        searchErrMsg: undefined,
         searchingConnections: false,
       };
     }

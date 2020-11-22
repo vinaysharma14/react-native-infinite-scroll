@@ -44,7 +44,22 @@ function* fetchConnectionsGenerator(
 
     yield put(fetchConnectionsSuccessAction(connections));
   } catch ({ message }) {
-    yield put(fetchConnectionsErrAction(message));
+    let meaningfulErr = '';
+
+    // errors are quite vague so we will map
+    // and display a meaningful error message
+    switch (message) {
+      case 'Network request failed':
+        meaningfulErr =
+          'We are unable to fetch results for you, please check your network connection. Connect to a nearby WiFi or a mobile network.';
+        break;
+
+      default:
+        meaningfulErr = message;
+        break;
+    }
+
+    yield put(fetchConnectionsErrAction(meaningfulErr));
   }
 }
 
@@ -75,6 +90,12 @@ function* searchConnectionsGenerator(
     const matches = stringifiedData
       ?.filter(({ string }) => string.includes(query))
       .map(({ id }) => id);
+
+    if (matches?.length === 0) {
+      throw new Error(
+        "Sorry, we couldn't find any connections with your query. Please try searching with more meaningful keywords.",
+      );
+    }
 
     // filter out all the connections whose email matches IDs from above
     const results = mockData?.filter(({ email }) => matches?.includes(email));

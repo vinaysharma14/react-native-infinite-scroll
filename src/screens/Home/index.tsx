@@ -1,18 +1,11 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import {
-  Text,
-  View,
-  FlatList,
-  StyleSheet,
-  SafeAreaView,
-  TouchableOpacity,
-} from 'react-native';
+import { View, FlatList, StyleSheet, SafeAreaView } from 'react-native';
 
 import { State } from '../../store';
 import { FONT_FAMILY } from '../../assets';
-import { Card, LoadingCard, Search } from '../../components';
+import { Card, LoadingCard, Search, Error } from '../../components';
 import { LAZY_LOAD_PLACEHOLDER_COUNT } from '../../constants';
 
 import {
@@ -26,6 +19,7 @@ export const Home = () => {
   const {
     connections,
     fetchErrMsg,
+    searchErrMsg,
     searchResults,
     fetchingConnections,
     searchingConnections,
@@ -66,26 +60,31 @@ export const Home = () => {
     return connections;
   }, [searchResults, showSearchResults, connections]);
 
+  const error = useMemo(() => {
+    if (fetchErrMsg) {
+      return {
+        label: fetchErrMsg,
+        handler: handleConnectionsFetch,
+      };
+    }
+
+    if (searchErrMsg) {
+      return {
+        label: searchErrMsg,
+      };
+    }
+
+    return undefined;
+  }, [fetchErrMsg, searchErrMsg, handleConnectionsFetch]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={[styles.container, styles.subContainer]}>
         <Search onClear={handleClear} onSubmit={handleSearch} />
 
         {/* error message if API fails with a prompt to try again*/}
-        {fetchErrMsg && !showListSkeleton && (
-          <View style={styles.errorContainer}>
-            <Text style={styles.regularFont}>
-              We are unable to fetch results for you, please check your network
-              connection. Connect to a nearby WiFi or a mobile network.
-            </Text>
-
-            <TouchableOpacity
-              style={styles.tryAgain}
-              onPress={handleConnectionsFetch}
-            >
-              <Text style={styles.regularFont}>Try Again</Text>
-            </TouchableOpacity>
-          </View>
+        {error && !showListSkeleton && (
+          <Error label={error.label} handler={error.handler} />
         )}
 
         {/* connection cards list */}
@@ -149,22 +148,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
     paddingHorizontal: 20,
   },
-  errorContainer: {
-    flex: 1,
-    alignItems: 'center',
-    marginHorizontal: 50,
-    backgroundColor: 'white',
-    justifyContent: 'center',
-  },
   regularFont: {
     fontFamily: FONT_FAMILY.MontserratRegular,
-  },
-  tryAgain: {
-    padding: 5,
-    marginTop: 10,
-    borderWidth: 1,
-    borderRadius: 2,
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 });
