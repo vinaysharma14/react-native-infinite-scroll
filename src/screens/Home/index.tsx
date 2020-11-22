@@ -89,7 +89,7 @@ export const Home = () => {
         )}
 
         {/* connection cards list */}
-        {listData?.length && !showListSkeleton && (
+        {listData !== undefined && listData.length !== 0 && !showListSkeleton && (
           <FlatList
             data={listData}
             renderItem={({ item, index }) =>
