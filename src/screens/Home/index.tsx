@@ -1,40 +1,102 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { SafeAreaView, View, FlatList, StyleSheet } from 'react-native';
+
+import { View, FlatList, StyleSheet, SafeAreaView } from 'react-native';
 
 import { State } from '../../store';
-import { Card, LoadingCard, Search } from '../../components';
+import { FONT_FAMILY } from '../../assets';
+import { Card, LoadingCard, Search, Error } from '../../components';
 import { LAZY_LOAD_PLACEHOLDER_COUNT } from '../../constants';
-import { fetchConnectionsReqAction } from '../../store/actions/connections';
+
+import {
+  fetchConnectionsReqAction,
+  searchConnectionsReqAction,
+} from '../../store/actions/connections';
 
 export const Home = () => {
-  const { connections } = useSelector(
-    ({ connectionsReducer }: State) => connectionsReducer,
-  );
+  const [showSearchResults, setShowSearchResults] = useState(false);
+
+  const {
+    connections,
+    fetchErrMsg,
+    searchErrMsg,
+    searchResults,
+    fetchingConnections,
+    searchingConnections,
+  } = useSelector(({ connectionsReducer }: State) => connectionsReducer);
 
   const dispatch = useDispatch();
-  const handleSearch = useCallback((value: string) => console.log(value), []);
+
+  const handleSearch = useCallback(
+    (value: string) => {
+      setShowSearchResults(true);
+      dispatch(searchConnectionsReqAction(value, connections));
+    },
+    [dispatch, connections],
+  );
 
   const handleConnectionsFetch = useCallback(
     () => dispatch(fetchConnectionsReqAction(50)),
     [dispatch],
   );
 
+  const handleClear = useCallback(() => {
+    setShowSearchResults(false);
+  }, []);
+
   useEffect(() => {
     handleConnectionsFetch();
   }, [handleConnectionsFetch]);
 
+  const showListSkeleton = useMemo(() => {
+    return searchingConnections || (fetchingConnections && !connections);
+  }, [searchingConnections, fetchingConnections, connections]);
+
+  const listData = useMemo(() => {
+    if (showSearchResults) {
+      return searchResults;
+    }
+
+    return connections;
+  }, [searchResults, showSearchResults, connections]);
+
+  const error = useMemo(() => {
+    if (fetchErrMsg) {
+      return {
+        label: fetchErrMsg,
+        handler: handleConnectionsFetch,
+      };
+    }
+
+    if (searchErrMsg) {
+      return {
+        label: searchErrMsg,
+      };
+    }
+
+    return undefined;
+  }, [fetchErrMsg, searchErrMsg, handleConnectionsFetch]);
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={[styles.container, styles.subContainer]}>
-        <Search onChange={handleSearch} />
+        <Search onClear={handleClear} onSubmit={handleSearch} />
 
-        {connections?.length ? (
+        {/* error message if API fails with a prompt to try again*/}
+        {error && !showListSkeleton && (
+          <Error label={error.label} handler={error.handler} />
+        )}
+
+        {/* connection cards list */}
+        {listData !== undefined && listData.length !== 0 && !showListSkeleton && (
           <FlatList
-            data={connections}
+            data={listData}
             renderItem={({ item, index }) =>
-              index >= connections.length - LAZY_LOAD_PLACEHOLDER_COUNT &&
-              index <= connections.length - 1 ? (
+              index >= listData.length - LAZY_LOAD_PLACEHOLDER_COUNT &&
+              index <= listData.length - 1 &&
+              !showSearchResults ? (
+                // placeholder cards for loading more cards
+                // when user reaches end of the list
                 <LoadingCard />
               ) : (
                 <Card
@@ -53,7 +115,10 @@ export const Home = () => {
             onEndReached={handleConnectionsFetch}
             ItemSeparatorComponent={() => <View style={styles.separator} />}
           />
-        ) : (
+        )}
+
+        {/* initial loading skeleton */}
+        {showListSkeleton && (
           <FlatList
             keyExtractor={(item) => item}
             contentContainerStyle={styles.list}
@@ -82,5 +147,8 @@ const styles = StyleSheet.create({
   list: {
     paddingBottom: 40,
     paddingHorizontal: 20,
+  },
+  regularFont: {
+    fontFamily: FONT_FAMILY.MontserratRegular,
   },
 });
