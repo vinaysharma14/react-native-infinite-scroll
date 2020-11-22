@@ -55,9 +55,36 @@ function* searchConnectionsGenerator(
   const { query, mockData } = action.payload;
 
   try {
-    // TODO: search algorithm with the query
+    //* should be an actual API which returns search result
+    //* for the time being using an algorithm to search
+    //* query in whatever data is present in our app
     yield delay(2000);
-    yield put(searchConnectionsSuccessAction(mockData?.slice(0, 5)));
+
+    // convert entire data into an array of string which contains
+    // following concatenated details of connections:
+    // name, email, cell, city, state, country
+    const stringifiedData = mockData?.map(
+      ({ name, email, cell, location }) => ({
+        // email has been kept as a primary key
+        id: email,
+        string: `${name} ${email} ${cell} ${location.city} ${location.country} ${location.state}`,
+      }),
+    );
+
+    // filter out ID of all the connections which match the query
+    const matches = stringifiedData
+      ?.filter(({ string }) => string.includes(query))
+      .map(({ id }) => id);
+
+    // filter out all the connections whose email matches IDs from above
+    const results = mockData?.filter(({ email }) => matches?.includes(email));
+
+    // pass down results to be displayed in app
+    yield put(searchConnectionsSuccessAction(results));
+
+    //* search UX can be improved by allowing user to select properties
+    //* it whishes to search by displaying them in
+    //* breadcrumbs instead of hard coding
   } catch ({ message }) {
     yield put(searchConnectionsErrAction(message));
   }
