@@ -81,12 +81,15 @@ const styles = StyleSheet.create({
     marginBottom: 40,
     shadowOpacity: 0.3,
     flexDirection: 'row',
+    alignItems: 'center',
     marginHorizontal: 20,
     backgroundColor: 'white',
     justifyContent: 'space-between',
     shadowOffset: { width: 0, height: 0 },
   },
   input: {
+    flex: 1,
+    paddingVertical: 0,
     fontFamily: FONT_FAMILY.MontserratMedium,
   },
 });

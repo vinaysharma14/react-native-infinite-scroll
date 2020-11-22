@@ -99,11 +99,12 @@ export const ConnectionDetails = () => {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.alignCenter}
       >
-        {connection.details?.map((values) => (
-          <View style={[styles.detailsContainer, styles.shadow]}>
+        {connection.details?.map((values, key) => (
+          <View key={key} style={[styles.detailsContainer, styles.shadow]}>
             <View>
               {values.map(({ label, value }, index) => (
                 <Text
+                  key={index}
                   style={[
                     styles.detail,
                     index === values.length - 1 && styles.mb0,
